@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class TerminalControl : MonoBehaviour
 { 
+    enum  Screen { MainMenu, Password, Win };
+    
+    Screen currentScreen = Screen.MainMenu;
+    
     int level;
+
     void Start()
     {
-        ShowMainMenu("Olga, ");
+        ShowMainMenu("NoName, ");
     }
+    
     void ShowMainMenu(string playerName)
     {
+        currentScreen = Screen.MainMenu;
         Terminal.ClearScreen();
         Terminal.WriteLine(playerName + "\nякий термінал ви хотіли б взломати?");
         Terminal.WriteLine("\n1 - міська бібліотека");
@@ -21,6 +28,23 @@ public class TerminalControl : MonoBehaviour
 
    
     void OnUserInput(string input)
+    {
+        if (input == "меню")
+        {
+            ShowMainMenu("Раді бачити вас знов, ");
+        }
+        else if (currentScreen == Screen.MainMenu)
+        {
+            RunMainMenu(input);
+        }
+    }
+    void GameStart()
+    {
+        currentScreen = Screen.Password;
+        Terminal.WriteLine("Ви обрали " + level + " рівень");
+    }
+
+    void RunMainMenu(string input)
     {
         if (input == "007")
         {
@@ -41,17 +65,10 @@ public class TerminalControl : MonoBehaviour
             level = 3;
             GameStart();
         }
-        else if (input == "меню")
-        {
-            ShowMainMenu("Раді бачити вас знов, ");
-        }
+        
         else
         {
             Terminal.WriteLine("Введіть значення від 1 до 3 або меню");
         }
-    }
-    void GameStart()
-    {
-        Terminal.WriteLine("Ви обрали " + level + " рівень");
     }
 }
