@@ -7,20 +7,25 @@ public class TerminalControl : MonoBehaviour
     enum Screen { MainMenu, Password, Win };
 
     Screen currentScreen = Screen.MainMenu;
+    
+    const string menuHint = "Напишіть ʼменюʼ щоб повернутися в меню.";
     int level;
     string password;
+    
     string[] Level1Password = { "ключ", "книга", "папір", "олівець", "ручка" };
     string[] Level2Password = { "пістолет", "автомат", "байрактар", "гаубиця", "джавелін" };
     string[] Level3Password = { "інтерстеллар", "аполлон-13", "ентерпрайз", "лексс", "елізіум" };
+    
     void Start()
     {
-        ShowMainMenu("Гравець, ");
+        ShowMainMenu("Гравець,");
     }
 
     void ShowMainMenu(string playerName)
     {
         currentScreen = Screen.MainMenu;
         level = 0;
+        
         Terminal.ClearScreen();
         Terminal.WriteLine(playerName + "\nякий термінал ви хотіли б взломати?");
         Terminal.WriteLine("\n1 - міська бібліотека");
@@ -45,27 +50,34 @@ public class TerminalControl : MonoBehaviour
             CheckPassword(input);
         }
     }
+    
     void GameStart()
     {
+    Terminal.ClearScreen();
+    currentScreen = Screen.Password;
+
     switch (level)
 
         {
             case 1:
                 password = Level1Password[Random.Range(0,Level1Password.Length)];
+                Terminal.WriteLine("Ви у міській бібліотеці");
                 break;
             case 2:
                 password = Level2Password[Random.Range(0,Level2Password.Length)];
+                Terminal.WriteLine("Ви в оружейній");
                 break;
             case 3:
                 password = Level3Password[Random.Range(0,Level3Password.Length)];
+                Terminal.WriteLine("Ви у космічному шаттлі");
                 break;
             default:
                 Debug.LogError("Такого рівня не існує");
                 break;
         }
-        currentScreen = Screen.Password;
-        Terminal.ClearScreen();
-        Terminal.WriteLine("Ви обрали " + level + " рівень");
+        
+        Terminal.WriteLine("Підказка: " + password.Anagram());
+        Terminal.WriteLine(menuHint);
         Terminal.WriteLine("Введіть пароль: ");
     }
 
@@ -89,12 +101,10 @@ public class TerminalControl : MonoBehaviour
         if (input == password)
         {
               ShowWinScreen();
-            //Terminal.WriteLine("Вітаю! Термінал взламано.");
         }
-
         else
         {
-            Terminal.WriteLine("Не вдалося, спробуйте ще...");
+           GameStart();
         }
     }
 
@@ -106,6 +116,8 @@ public class TerminalControl : MonoBehaviour
 
     void Reward()
     {
+    currentScreen = Screen.Win;
+    
     switch(level)
         {
            case 1:
@@ -116,8 +128,7 @@ public class TerminalControl : MonoBehaviour
    // ~~ ~~ | ~~ ~  \\
   // ~ ~ ~~ | ~~~ ~~ \\      
  //________.|.________\\     
-`----------`-'----------'
-                            ");
+`----------`-'----------' ");
            break; 
            
            case 2:
@@ -127,10 +138,7 @@ public class TerminalControl : MonoBehaviour
       __/__________\____________n_
   (( /              \_____________]Піу!
     /  =(*)=          \
-    |_._._._._._._._._.|        
-(( / __________________ \       
-  | OOOOOOOOOOOOOOOOOOO0 |   
-                            ");
+    |_._._._._._._._._.| ");
            break;
 
            case 3:
@@ -141,13 +149,12 @@ public class TerminalControl : MonoBehaviour
    |--o|===|-|
    |---|   | |
   /     \  | |
- |       | | |
  |       |=| |
  |_______| |_|
   |@| |@|  | |
-___________|_|_
-                            ");
+___________|_|_ ");
            break;
         }
+        Terminal.WriteLine(menuHint);
     }
 }
